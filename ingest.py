@@ -2,6 +2,7 @@ from pathlib import Path
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
 
 
 def load_pdf(pdf_path):
@@ -24,6 +25,14 @@ def create_embeddings():
     return embeddings
 
 
+def store_embeddings(embeddings, chunks):
+    db = Chroma.from_documents(
+        documents=chunks, embedding=embeddings, persist_directory="db"
+    )
+    db.persist()
+    return db
+
+
 def main():
     print("Loading documents...")
 
@@ -38,6 +47,9 @@ def main():
 
     embeddings = create_embeddings()
     print(f"Embeddings model created")
+
+    store_embeddings(embeddings, chunks)
+    print(f"Embeddings stored")
 
 
 if __name__ == "__main__":
