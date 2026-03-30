@@ -1,6 +1,10 @@
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
-import ollama
+from langchain_openai import ChatOpenAI
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def load_vector_db():
@@ -18,16 +22,21 @@ def retrieve_context(query, vectordb, k=3):
 
 
 def generate_response(query, context):
+    llm = ChatOpenAI(
+        api_key=os.getenv("GROQ_API_KEY"),
+        base_url="https://api.groq.com/openai/v1",
+        model="llama-3.3-70b-versatile",
+    )
+
     prompt = f"""
     You are a helpful assistant that can answer questions about the following context:
     {context}
     Question: {query}
     Answer:
     """
-    response = ollama.chat(
-        model="llama3.2:3b", messages=[{"role": "user", "content": prompt}]
-    )
-    return response["message"]["content"]
+
+    response = llm.invoke(prompt)
+    return response.content
 
 
 def main():

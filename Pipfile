@@ -11,6 +11,12 @@ ollama = "*"
 pypdf = "*"
 langchain-community = "*"
 langchain-text-splitters = "*"
+python-dotenv = "*"
+openai = "*"
+langchain-openai = "*"
+streamlit = "*"
+langchain-huggingface = "*"
+langchain-chroma = "*"
 
 [dev-packages]
 
